@@ -1,0 +1,102 @@
+# Exercise 3: Host Variables Demonstration
+# This playbook shows how host-specific variables are used
+# Learning Objectives:
+# - Understand host_vars directory structure
+# - Use device-specific variables in tasks
+# - Apply different configurations per device
+
+---
+- name: Exercise 3 - Host Variables Demo
+  hosts: all
+  gather_facts: no
+  
+  tasks:
+    - name: Display host-specific variables
+      debug:
+        msg: |
+          Device: {{ inventory_hostname }}
+          Hostname: {{ hostname }}
+          Domain: {{ domain_name }}
+          Management IP: {{ mgmt_interface.ip_address }}/{{ mgmt_interface.subnet_mask }}
+          Model: {{ ansible_host }} (inventory)
+          Device Type: {{ device_type }}
+          Location: {{ location | default('Not specified') }}
+
+    - name: Show VLANs configured on this device (switches only)
+      debug:
+        msg: |
+          VLAN {{ item.id }}: {{ item.name }}
+          Description: {{ item.description | default('No description') }}
+      loop: "{{ vlans }}"
+      when: device_type == "switch"
+      
+    - name: Show interface configurations for this device
+      debug:
+        msg: |
+          Interface: {{ item.key }}
+          Description: {{ item.value.description }}
+          {% if item.value.mode is defined %}Mode: {{ item.value.mode }}{% endif %}
+          {% if item.value.access_vlan is defined %}Access VLAN: {{ item.value.access_vlan }}{% endif %}
+          {% if item.value.ip_address is defined %}IP Address: {{ item.value.ip_address }}{% endif %}
+      loop: "{{ interfaces | dict2items }}"
+      when: interfaces is defined
+      
+    - name: Show DHCP pools (routers only)
+      debug:
+        msg: |
+          Pool: {{ item.key }}
+          Network: {{ item.value.network }}/{{ item.value.subnet_mask }}
+          Gateway: {{ item.value.default_router }}
+          DNS Servers: {{ item.value.dns_servers | join(', ') }}
+          Lease: {{ item.value.lease_days }} days
+      loop: "{{ dhcp_pools | dict2items }}"
+      when: device_type == "router" and dhcp_pools is defined
+      
+    - name: Show local users configured for this device
+      debug:
+        msg: |
+          Username: {{ item.username }}
+          Privilege Level: {{ item.privilege }}
+      loop: "{{ local_users }}"
+      when: local_users is defined
+      
+    - name: Configure hostname using host variable
+      cisco.ios.ios_config:
+        lines:
+          - hostname {{ hostname }}
+      when: hostname is defined
+      
+    - name: Configure management interface (dry-run)
+      debug:
+        msg: |
+          Would configure {{ mgmt_interface.name }}:
+          - IP: {{ mgmt_interface.ip_address }} {{ mgmt_interface.subnet_mask }}
+          - Gateway: {{ mgmt_interface.gateway }}
+      when: mgmt_interface is defined
+      
+    - name: Show NTP servers for this device
+      debug:
+        msg: "NTP Servers: {{ ntp_servers | join(', ') }}"
+      when: ntp_servers is defined
+      
+    - name: Display device-specific banner
+      debug:
+        msg: "{{ banner.motd }}"
+      when: banner is defined and banner.motd is defined
+
+# Instructions for Students:
+# 1. Review the host_vars files (switch01.yml, switch02.yml, router01.yml)
+# 2. Run: ansible-playbook playbooks/03_host_vars_demo.yml
+# 3. Notice how each device shows different information
+# 4. Modify host_vars files and re-run to see changes
+# 
+# Exercise Tasks:
+# 1. Add a new variable to one host_vars file
+# 2. Create a task that uses this new variable
+# 3. Run the playbook and verify only that host shows the new information
+# 4. Try adding conditional logic based on host variables
+#
+# Key Concepts:
+# - host_vars override group_vars and all.yml
+# - Each device can have completely different configurations
+# - Use conditionals to apply tasks only to relevant devices

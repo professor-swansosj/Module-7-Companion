@@ -1,0 +1,100 @@
+{# VLAN Configuration Template #}
+{# This template generates VLAN configurations for switches #}
+
+{%- if device_category == "switch" %}
+{# Configure VTP mode first #}
+{%- if vtp is defined %}
+vtp mode {{ vtp.mode }}
+{%- if vtp.version is defined %}
+vtp version {{ vtp.version }}
+{%- endif %}
+!
+{%- endif %}
+
+{# Configure individual VLANs #}
+{%- if vlans is defined %}
+{%- for vlan in vlans %}
+vlan {{ vlan.id }}
+ name {{ vlan.name }}
+{%- if vlan.description is defined %}
+ description {{ vlan.description }}
+{%- endif %}
+!
+{%- endfor %}
+{%- endif %}
+
+{# Include default VLANs from group_vars if they exist #}
+{%- if default_vlans is defined %}
+{%- for vlan in default_vlans %}
+{%- if vlan.id != 1 %}  {# Skip default VLAN 1 #}
+vlan {{ vlan.id }}
+ name {{ vlan.name }}
+{%- if vlan.description is defined %}
+ description {{ vlan.description }}
+{%- endif %}
+!
+{%- endif %}
+{%- endfor %}
+{%- endif %}
+
+{# Configure Spanning Tree per VLAN if needed #}
+{%- if stp is defined %}
+{%- if vlans is defined %}
+{%- for vlan in vlans %}
+spanning-tree vlan {{ vlan.id }} priority {{ stp.priority | default(32768) }}
+{%- endfor %}
+{%- endif %}
+{%- endif %}
+
+{# Configure global spanning tree settings #}
+{%- if stp_global is defined %}
+{%- if stp_global.mode is defined %}
+spanning-tree mode {{ stp_global.mode }}
+{%- endif %}
+{%- if stp_global.portfast_default %}
+spanning-tree portfast default
+{%- endif %}
+{%- if stp_global.portfast_bpduguard_default %}
+spanning-tree portfast bpduguard default
+{%- endif %}
+{%- if stp_global.uplinkfast %}
+spanning-tree uplinkfast
+{%- endif %}
+!
+{%- endif %}
+
+{# DHCP Snooping Configuration (if enabled) #}
+{%- if dhcp_snooping is defined and dhcp_snooping.enabled %}
+ip dhcp snooping
+{%- if dhcp_snooping.verify_mac_address %}
+ip dhcp snooping verify mac-address
+{%- endif %}
+{%- if vlans is defined %}
+{%- for vlan in vlans %}
+ip dhcp snooping vlan {{ vlan.id }}
+{%- endfor %}
+{%- endif %}
+!
+{%- endif %}
+
+{# Dynamic ARP Inspection Configuration #}
+{%- if dai is defined %}
+{%- if vlans is defined %}
+{%- for vlan in vlans %}
+ip arp inspection vlan {{ vlan.id }}
+{%- endfor %}
+{%- endif %}
+{%- if dai.validate_src_mac or dai.validate_dst_mac or dai.validate_ip %}
+ip arp inspection validate
+{%- if dai.validate_src_mac %} src-mac{%- endif %}
+{%- if dai.validate_dst_mac %} dst-mac{%- endif %}
+{%- if dai.validate_ip %} ip{%- endif %}
+
+!
+{%- endif %}
+{%- endif %}
+
+{%- else %}
+{# This template is for switches only #}
+! VLAN configuration is not applicable for routers
+{%- endif %}

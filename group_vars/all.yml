@@ -1,0 +1,125 @@
+# Group Variables for All Devices
+# These variables apply to ALL devices in the inventory
+# Variables defined here have the lowest precedence
+
+# Common device settings
+timezone: "EST -5"
+logging:
+  buffered_size: 10240
+  console_level: "warnings"
+  
+# Common SNMP settings
+snmp_global:
+  version: "2c"
+  trap_source: "Loopback0"
+  
+# SSH configuration
+ssh:
+  version: 2
+  timeout: 60
+  authentication_retries: 3
+
+# Common security settings
+security:
+  service_password_encryption: true
+  login_block_for: 300
+  login_quiet_mode_access_class: "SSH_ACCESS"
+  login_delay: 1
+  login_on_failure_log: true
+  login_on_success_log: true
+
+# Archive configuration for configuration backups
+archive:
+  path: "flash:configs/"
+  maximum: 10
+  time_period: 1440  # minutes (24 hours)
+
+# Common AAA settings
+aaa:
+  new_model: true
+  authentication:
+    login_default: "local"
+  authorization:
+    exec_default: "local"
+
+# Standard ACLs applied to all devices
+standard_acls:
+  SSH_ACCESS:
+    - "permit 192.168.0.0 0.0.255.255"
+    - "permit 10.0.0.0 0.255.255.255"
+    - "permit 172.16.0.0 0.15.255.255"
+    - "deny any log"
+
+# DNS settings
+dns:
+  domain_lookup: true
+  servers:
+    - "8.8.8.8"
+    - "8.8.4.4"
+
+# Common VTY line configuration
+vty_lines:
+  count: 16
+  transport_input: "ssh"
+  access_class: "SSH_ACCESS"
+  exec_timeout_min: 30
+  exec_timeout_sec: 0
+  
+# Console line configuration  
+console_line:
+  exec_timeout_min: 0
+  exec_timeout_sec: 0
+  logging_synchronous: true
+
+# Common interface settings
+interface_defaults:
+  description_prefix: "*** CONFIGURED BY ANSIBLE ***"
+  
+# Syslog configuration
+syslog:
+  servers:
+    - "192.168.1.100"
+  facility: "local7"
+  
+# OSPF process settings (if using OSPF)
+ospf:
+  process_id: 1
+  router_id_source: "Loopback0"
+  
+# Common login banner
+common_banner: |
+  *********************************************************
+  *                                                       *
+  *  Florida State College at Jacksonville                *
+  *  Software Defined Networking Lab                     *
+  *                                                       *
+  *  NOTICE TO USERS: This is a restricted network       *
+  *  facility. All activities are monitored and logged.  *
+  *  Unauthorized access is prohibited.                  *
+  *                                                       *
+  *********************************************************
+
+# Backup configuration
+backup:
+  enabled: true
+  server: "192.168.1.100"
+  path: "/backups/network/"
+
+# Device monitoring settings
+monitoring:
+  snmp_polling_interval: 300  # seconds
+  syslog_level: "informational"
+  
+# Quality of Service (QoS) classes
+qos_classes:
+  - name: "VOICE"
+    dscp: "ef"
+    priority: "high"
+    
+  - name: "VIDEO" 
+    dscp: "af41"
+    priority: "medium"
+    
+  - name: "DATA"
+    dscp: "default"
+    priority: "low"

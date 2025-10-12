@@ -1,0 +1,176 @@
+# Exercise 5: Jinja2 Template Rendering
+# This playbook demonstrates rendering configuration templates
+# Learning Objectives:
+# - Use Jinja2 templates to generate configurations
+# - Combine host_vars and group_vars in templates
+# - Apply generated configurations to devices
+
+---
+- name: Exercise 5 - Template Rendering and Configuration
+  hosts: all
+  gather_facts: no
+  
+  tasks:
+    - name: Generate base configuration from template
+      template:
+        src: ../templates/base_config.j2
+        dest: "/tmp/{{ inventory_hostname }}_base_config.txt"
+      delegate_to: localhost
+      
+    - name: Generate interface configuration from template
+      template:
+        src: ../templates/interface_config.j2
+        dest: "/tmp/{{ inventory_hostname }}_interface_config.txt"
+      delegate_to: localhost
+      when: interfaces is defined
+      
+    - name: Generate VLAN configuration for switches
+      template:
+        src: ../templates/vlan_config.j2
+        dest: "/tmp/{{ inventory_hostname }}_vlan_config.txt"
+      delegate_to: localhost
+      when: inventory_hostname in groups['switches']
+      
+    - name: Generate router-specific configuration  
+      template:
+        src: ../templates/router_config.j2
+        dest: "/tmp/{{ inventory_hostname }}_router_config.txt"
+      delegate_to: localhost
+      when: inventory_hostname in groups['routers']
+      
+    - name: Display generated base configuration (preview)
+      debug:
+        msg: |
+          === Generated Base Configuration Preview ===
+          {% for line in lookup('file', '/tmp/' + inventory_hostname + '_base_config.txt').split('\n') %}
+          {{ line }}
+          {% endfor %}
+      delegate_to: localhost
+      
+    - name: Show generated interface configuration (first 20 lines)
+      shell: head -20 /tmp/{{ inventory_hostname }}_interface_config.txt
+      register: interface_preview
+      delegate_to: localhost
+      when: interfaces is defined
+      
+    - name: Display interface configuration preview
+      debug:
+        var: interface_preview.stdout_lines
+      when: interfaces is defined and interface_preview is defined
+      
+    - name: Apply hostname configuration (safe command)
+      cisco.ios.ios_config:
+        lines:
+          - hostname {{ hostname }}
+      when: hostname is defined
+      
+    - name: Apply domain name configuration  
+      cisco.ios.ios_config:
+        lines:
+          - ip domain-name {{ domain_name }}
+      when: domain_name is defined
+      
+    - name: Configure NTP servers
+      cisco.ios.ios_config:
+        lines:
+          - ntp server {{ item }}
+      loop: "{{ ntp_servers }}"
+      when: ntp_servers is defined
+      
+    - name: Configure DNS servers
+      cisco.ios.ios_config:
+        lines:
+          - ip name-server {{ item }}
+      loop: "{{ dns.servers }}"
+      when: dns is defined and dns.servers is defined
+      
+    - name: Apply SNMP configuration
+      cisco.ios.ios_config:
+        lines:
+          - snmp-server community {{ snmp.community }} RO
+          - snmp-server location {{ snmp.location }}
+          - snmp-server contact {{ snmp.contact }}
+      when: snmp is defined
+      
+    - name: Configure VLANs on switches (using template logic)
+      cisco.ios.ios_config:
+        parents: "vlan {{ item.id }}"
+        lines:
+          - name {{ item.name }}
+      loop: "{{ vlans }}"
+      when: inventory_hostname in groups['switches'] and vlans is defined
+      
+    - name: Dry-run: Show what interface config would be applied
+      debug:
+        msg: |
+          Would configure {{ item.key }}:
+          Description: {{ item.value.description }}
+          {% if item.value.mode is defined %}Mode: {{ item.value.mode }}{% endif %}
+          {% if item.value.ip_address is defined %}IP: {{ item.value.ip_address }}{% endif %}
+      loop: "{{ interfaces | dict2items }}"
+      when: interfaces is defined
+      
+    - name: Create comprehensive configuration file
+      template:
+        src: ../templates/base_config.j2
+        dest: "/tmp/{{ inventory_hostname }}_complete_config.txt"
+      delegate_to: localhost
+      
+    - name: Append interface config to complete configuration
+      shell: |
+        echo "" >> /tmp/{{ inventory_hostname }}_complete_config.txt
+        echo "! Interface Configuration" >> /tmp/{{ inventory_hostname }}_complete_config.txt
+        cat /tmp/{{ inventory_hostname }}_interface_config.txt >> /tmp/{{ inventory_hostname }}_complete_config.txt
+      delegate_to: localhost
+      when: interfaces is defined
+      
+    - name: Append VLAN config for switches
+      shell: |
+        echo "" >> /tmp/{{ inventory_hostname }}_complete_config.txt
+        echo "! VLAN Configuration" >> /tmp/{{ inventory_hostname }}_complete_config.txt
+        cat /tmp/{{ inventory_hostname }}_vlan_config.txt >> /tmp/{{ inventory_hostname }}_complete_config.txt
+      delegate_to: localhost
+      when: inventory_hostname in groups['switches']
+      
+    - name: Append router config for routers
+      shell: |
+        echo "" >> /tmp/{{ inventory_hostname }}_complete_config.txt  
+        echo "! Router-Specific Configuration" >> /tmp/{{ inventory_hostname }}_complete_config.txt
+        cat /tmp/{{ inventory_hostname }}_router_config.txt >> /tmp/{{ inventory_hostname }}_complete_config.txt
+      delegate_to: localhost
+      when: inventory_hostname in groups['routers']
+      
+    - name: Display configuration file locations
+      debug:
+        msg: |
+          === Generated Configuration Files ===
+          Complete Config: /tmp/{{ inventory_hostname }}_complete_config.txt
+          Base Config: /tmp/{{ inventory_hostname }}_base_config.txt
+          {% if interfaces is defined %}Interface Config: /tmp/{{ inventory_hostname }}_interface_config.txt{% endif %}
+          {% if inventory_hostname in groups['switches'] %}VLAN Config: /tmp/{{ inventory_hostname }}_vlan_config.txt{% endif %}
+          {% if inventory_hostname in groups['routers'] %}Router Config: /tmp/{{ inventory_hostname }}_router_config.txt{% endif %}
+
+# Instructions for Students:
+# 1. Run: ansible-playbook playbooks/05_template_rendering.yml
+# 2. Check the generated files in /tmp/ directory
+# 3. Compare configurations between different devices
+# 4. Review how variables are used in templates
+#
+# Exercise Extensions:
+# 1. Modify templates to add new configuration sections
+# 2. Add conditional logic to templates based on device type
+# 3. Create a new template for specific features (QoS, security, etc.)
+# 4. Use the generated configs to actually configure devices (CAREFULLY!)
+#
+# File Locations to Review:
+# - /tmp/[hostname]_complete_config.txt - Full generated configuration
+# - /tmp/[hostname]_base_config.txt - Base device settings
+# - /tmp/[hostname]_interface_config.txt - Interface configurations
+# - /tmp/[hostname]_vlan_config.txt - VLAN settings (switches only)
+# - /tmp/[hostname]_router_config.txt - Router settings (routers only)
+#
+# Template Files to Study:
+# - templates/base_config.j2 - Basic device configuration
+# - templates/interface_config.j2 - Interface settings
+# - templates/vlan_config.j2 - VLAN configuration
+# - templates/router_config.j2 - Router-specific settings

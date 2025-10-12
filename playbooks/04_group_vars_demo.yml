@@ -1,0 +1,129 @@
+# Exercise 4: Group Variables Demonstration
+# This playbook shows how group variables work and variable precedence
+# Learning Objectives:
+# - Understand group_vars directory structure
+# - See how group variables apply to device groups
+# - Understand variable precedence (all < group < host)
+
+---
+- name: Exercise 4 - Group Variables Demo
+  hosts: all
+  gather_facts: no
+  
+  tasks:
+    - name: Display variables from all.yml (applies to all devices)
+      debug:
+        msg: |
+          === Variables from group_vars/all.yml ===
+          Timezone: {{ timezone }}
+          DNS Servers: {{ dns.servers | join(', ') }}
+          SSH Version: {{ ssh.version }}
+          Logging Buffer Size: {{ logging.buffered_size }}
+          
+    - name: Display switch-specific group variables
+      debug:
+        msg: |
+          === Variables from group_vars/switches.yml ===
+          Device Category: {{ device_category }}
+          Switch Type: {{ switch_type }}
+          STP Mode: {{ stp_global.mode }}
+          Port Security Max: {{ port_security.maximum_addresses }}
+          VTP Mode: {{ vtp.mode }}
+      when: inventory_hostname in groups['switches']
+      
+    - name: Display router-specific group variables  
+      debug:
+        msg: |
+          === Variables from group_vars/routers.yml ===
+          Device Category: {{ device_category }}
+          Router Type: {{ router_type }}
+          IP Routing: {{ ip_routing.enabled }}
+          CEF Enabled: {{ cef.enabled }}
+          NAT Timeout: {{ nat_global.timeout }}
+      when: inventory_hostname in groups['routers']
+      
+    - name: Show default VLANs (switches only - from group_vars)
+      debug:
+        msg: |
+          Default VLAN {{ item.id }}: {{ item.name }}
+          Description: {{ item.description }}
+      loop: "{{ default_vlans }}"
+      when: inventory_hostname in groups['switches']
+      
+    - name: Show QoS classes from all.yml
+      debug:
+        msg: |
+          QoS Class: {{ item.name }}
+          DSCP: {{ item.dscp }}
+          Priority: {{ item.priority }}
+      loop: "{{ qos_classes }}"
+      
+    - name: Demonstrate variable precedence
+      debug:
+        msg: |
+          === Variable Precedence Demo ===
+          Device Category (should match group): {{ device_category }}
+          {% if hostname is defined %}Hostname (host-specific): {{ hostname }}{% endif %}
+          {% if location is defined %}Location (host-specific): {{ location }}{% endif %}
+          Banner Source: {{ 'host_vars' if banner is defined else 'group_vars (common_banner)' }}
+          
+    - name: Show standard ACLs from all.yml
+      debug:
+        msg: |
+          ACL: {{ item.key }}
+          Rules: {{ item.value | join(' | ') }}
+      loop: "{{ standard_acls | dict2items }}"
+      
+    - name: Show VTY line configuration from all.yml
+      debug:
+        msg: |
+          VTY Lines: 0-{{ vty_lines.count - 1 }}
+          Transport: {{ vty_lines.transport_input }}
+          Access Class: {{ vty_lines.access_class }}
+          Timeout: {{ vty_lines.exec_timeout_min }} minutes
+          
+    - name: Show switch-specific port security settings
+      debug:
+        msg: |
+          Port Security Violation Mode: {{ port_security.violation_mode }}
+          Max Addresses: {{ port_security.maximum_addresses }}
+          Aging Time: {{ port_security.aging_time }} minutes
+          Aging Type: {{ port_security.aging_type }}
+      when: inventory_hostname in groups['switches']
+      
+    - name: Show router QoS classes
+      debug:
+        msg: |
+          Router QoS Class: {{ item.name }}
+          Bandwidth: {{ item.bandwidth_percent }}%
+          {% if item.priority is defined %}Priority: {{ item.priority }}{% endif %}
+      loop: "{{ qos_routers.classes }}"
+      when: inventory_hostname in groups['routers']
+      
+    - name: Variable precedence test - create config snippet
+      debug:
+        msg: |
+          === Configuration would include ===
+          hostname {{ hostname | default('DEFAULT-HOSTNAME') }}
+          ip domain-name {{ domain_name | default('example.com') }}
+          spanning-tree mode {{ stp_global.mode | default('pvst') }}
+      when: inventory_hostname in groups['switches']
+
+# Instructions for Students:
+# 1. Review group_vars files (all.yml, switches.yml, routers.yml) 
+# 2. Run: ansible-playbook playbooks/04_group_vars_demo.yml
+# 3. Compare output between switches and routers
+# 4. Note how host_vars override group_vars
+#
+# Exercise Tasks:
+# 1. Add a new variable to switches.yml
+# 2. Add the same variable with different value to all.yml  
+# 3. See which value takes precedence
+# 4. Override the variable in one host_vars file
+# 5. Observe the precedence: host_vars > group_vars > all.yml
+#
+# Key Learning Points:
+# - group_vars apply to all devices in that group
+# - Variables in all.yml apply to ALL devices
+# - host_vars have highest precedence
+# - Use groups for shared configuration across similar devices

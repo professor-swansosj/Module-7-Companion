@@ -1,0 +1,86 @@
+# Host Variables for switch01
+# Device-specific configuration variables
+# These variables apply only to switch01
+
+# Device identification
+hostname: "SW01-ACCESS-A"
+domain_name: "lab.fscj.edu"
+
+# Management interface configuration
+mgmt_interface:
+  name: "vlan1"
+  ip_address: "192.168.1.10"
+  subnet_mask: "255.255.255.0"
+  gateway: "192.168.1.1"
+
+# VLAN configuration specific to this switch
+vlans:
+  - id: 10
+    name: "STUDENT_LAB_A" 
+    description: "Student Lab Room A"
+    
+  - id: 20
+    name: "FACULTY_A"
+    description: "Faculty Network Room A"
+    
+  - id: 99
+    name: "MANAGEMENT"
+    description: "Management Network"
+
+# Interface configuration
+interfaces:
+  GigabitEthernet0/1:
+    description: "Connection to Router01"
+    mode: "trunk"
+    native_vlan: 99
+    allowed_vlans: "10,20,99"
+    
+  GigabitEthernet0/2:
+    description: "Student PC Port 1"
+    mode: "access"
+    access_vlan: 10
+    
+  GigabitEthernet0/3:
+    description: "Student PC Port 2"  
+    mode: "access"
+    access_vlan: 10
+    
+  GigabitEthernet0/4:
+    description: "Faculty PC Port 1"
+    mode: "access"
+    access_vlan: 20
+
+# Spanning Tree Protocol settings
+stp:
+  mode: "rapid-pvst"
+  priority: 32768
+  
+# SNMP configuration
+snmp:
+  location: "Lab Room A, Building 1"
+  contact: "Network Admin <netadmin@fscj.edu>"
+  community: "public"
+
+# NTP servers
+ntp_servers:
+  - "192.168.1.1"
+  - "time.nist.gov"
+
+# Local users
+local_users:
+  - username: "labadmin"
+    privilege: 15
+    password: "Lab123!"
+    
+  - username: "student"
+    privilege: 1
+    password: "Student123!"
+
+# Banner configuration
+banner:
+  motd: |
+    ******************************************
+    * FSCJ Network Lab - Switch01          *
+    * Lab Room A Access Switch             *
+    * Authorized Personnel Only            *
+    ******************************************

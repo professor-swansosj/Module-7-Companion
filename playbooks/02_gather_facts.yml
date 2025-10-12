@@ -1,0 +1,91 @@
+# Exercise 2: Gather Device Facts and Information
+# This playbook demonstrates comprehensive fact gathering
+# Learning Objectives:
+# - Understand different fact gathering subsets
+# - Extract specific information from devices
+# - Use conditionals based on device type
+
+---
+- name: Exercise 2 - Gather Device Facts
+  hosts: all
+  gather_facts: no
+  
+  tasks:
+    - name: Gather comprehensive facts about devices
+      cisco.ios.ios_facts:
+        gather_subset:
+          - all
+      register: all_facts
+      
+    - name: Display network interfaces (switches only)
+      debug:
+        msg: |
+          Interface: {{ item }}
+          Status: {{ ansible_net_interfaces[item]['description'] | default('No description') }}
+          Type: {{ ansible_net_interfaces[item]['type'] }}
+      loop: "{{ ansible_net_interfaces.keys() | list }}"
+      when: device_type == "switch"
+      
+    - name: Display routing table (routers only)
+      cisco.ios.ios_command:
+        commands:
+          - show ip route summary
+      register: routing_info
+      when: device_type == "router"
+      
+    - name: Show routing summary for routers
+      debug:
+        var: routing_info.stdout_lines
+      when: device_type == "router"
+      
+    - name: Check VLAN information (switches only) 
+      cisco.ios.ios_command:
+        commands:
+          - show vlan brief
+      register: vlan_info
+      when: device_type == "switch"
+      
+    - name: Display VLAN information
+      debug:
+        var: vlan_info.stdout_lines
+      when: device_type == "switch"
+      
+    - name: Gather memory and CPU information
+      cisco.ios.ios_command:
+        commands:
+          - show processes cpu
+          - show memory summary
+      register: system_resources
+      
+    - name: Create device inventory report
+      debug:
+        msg: |
+          ===== Device Report for {{ inventory_hostname }} =====
+          Hostname: {{ ansible_net_hostname }}
+          Model: {{ ansible_net_model }}
+          IOS Version: {{ ansible_net_version }}
+          Serial Number: {{ ansible_net_serialnum }}
+          Uptime: {{ ansible_net_uptime }}
+          Total Memory: {{ ansible_net_memtotal_mb }}MB
+          Free Memory: {{ ansible_net_memfree_mb }}MB
+          Device Type: {{ device_type }}
+          Location: {{ location | default('Not specified') }}
+          
+    - name: Save device facts to file (optional)
+      copy:
+        content: "{{ all_facts | to_nice_json }}"
+        dest: "/tmp/{{ inventory_hostname }}_facts.json"
+      delegate_to: localhost
+      run_once: false
+
+# Instructions for Students:
+# 1. Run: ansible-playbook playbooks/02_gather_facts.yml
+# 2. Observe different outputs for switches vs routers
+# 3. Check the generated JSON files in /tmp/ directory
+# 4. Modify the playbook to gather specific information you're interested in
+#
+# Extension Exercises:
+# - Add tasks to check interface status
+# - Create custom reports based on device type
+# - Filter facts to show only important information
+# - Export results to CSV format
