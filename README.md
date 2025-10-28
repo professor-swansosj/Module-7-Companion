@@ -1,24 +1,25 @@
-# Module 7: Infrastructure as Code with Ansible
+# Module 7 Companion - Infrastructure as Code with Ansible
 
-**Software Defined Networking - Network Automation Course**  
-**Florida State College at Jacksonville**
+## Software Defined Networking Course
 
-## Course Information
+> **Master Infrastructure as Code!** This companion repository provides a progressive learning path for Infrastructure as Code using Ansible for network automation. You'll start with basic concepts and gradually build expertise through hands-on exercises with Cisco DevNet Sandbox devices.
+
+## 🎯 What You'll Practice
+
+Transform your network automation skills by learning Infrastructure as Code principles with Ansible. Build from basic concepts to advanced automation patterns that scale across enterprise environments.
+
+## � Prerequisites
 
 - **Course**: Software Defined Networking (Network Automation)
 - **Level**: Senior Level
 - **Prerequisites**: Linux+, Introduction to Python, Cisco 1, 2, 3
 - **Module**: 7 - Infrastructure as Code with Ansible
 
-## Module Overview
-
-This companion repository provides a progressive learning path for Infrastructure as Code using Ansible for network automation. You'll start with basic concepts and gradually build expertise through hands-on exercises with Cisco DevNet Sandbox devices.
-
-## 🚀 Learning Path
+## 🗂 Learning Path
 
 **Follow these topics in order for the best learning experience:**
 
-### 📚 Learning Progression
+### Learning Progression
 
 **🎯 Start Here:** Complete each topic before moving to the next one.
 
@@ -37,7 +38,7 @@ This companion repository provides a progressive learning path for Infrastructur
 - Build scalable automation that works across multiple devices
 - Apply Infrastructure as Code principles to network operations
 
-### 📁 Project Structure
+### Project Structure
 
 ```yaml
 Module-7-Companion/
@@ -69,9 +70,9 @@ Module-7-Companion/
     └── network_config.yml
 ```
 
-## 🚀 Getting Started
+## 🚀 Getting Hands-On
 
-### Prerequisites Setup
+### Setup
 
 Before starting the companion exercises:
 
@@ -85,7 +86,7 @@ Before starting the companion exercises:
 3. **DevNet Sandbox**: Reserve a Cisco DevNet Sandbox device for hands-on practice
 4. **Text Editor**: Use VS Code or your preferred editor for YAML files
 
-### How to Use This Companion
+## 🎯 Practice Callouts
 
 **🎯 Follow the Learning Path:**
 
@@ -106,11 +107,11 @@ cd Module-7-Companion
 cd 01_ansible_introduction
 ```
 
-## 📖 What You'll Build
+## 🎖 What You'll Build
 
 As you progress through the topics, you'll build a complete Ansible automation system:
 
-### 🎯 Progressive Skills Development
+### Progressive Skills Development
 
 #### Topic 01-02: Foundation
 
@@ -127,7 +128,7 @@ As you progress through the topics, you'll build a complete Ansible automation s
 - Dynamic configuration generation using Jinja2 templates
 - Scalable, maintainable automation workflows
 
-### 🏗 Final Project Structure
+### Final Project Structure
 
 By completion, your project will look like:
 
@@ -150,7 +151,7 @@ Module-7-Companion/
     └── deploy_configs.yml
 ```
 
-## 🔧 Configuration Examples
+## � Configuration Examples
 
 Each directory contains detailed examples and comments to help you understand:
 
@@ -159,7 +160,7 @@ Each directory contains detailed examples and comments to help you understand:
 - **Group Variables**: Common settings like SNMP, NTP, domain information
 - **Templates**: Reusable Jinja2 templates for various configuration sections
 
-## 🎓 Success Tips
+## � Success Criteria
 
 **📝 Best Practices for Learning:**
 
@@ -170,7 +171,7 @@ Each directory contains detailed examples and comments to help you understand:
 - **Document**: Add comments explaining what you learn
 - **Ask Questions**: Use the discussion board when stuck
 
-**🔧 Technical Reminders:**
+**Technical Reminders:**
 
 - **Security First**: Always use Ansible Vault for credentials
 - Keep your DevNet Sandbox reservation active
@@ -187,13 +188,13 @@ Each directory contains detailed examples and comments to help you understand:
 - **Template Issues**: Check Jinja2 syntax and variable names
 - **Playbook Failures**: Verify device OS compatibility
 
-**💬 Where to Ask for Help:**
+**Where to Ask for Help:**
 
 - Class discussion board for technical questions
 - Office hours for concept clarification  
 - Study groups for collaborative learning
 
-**🔍 Self-Help Commands:**
+**Self-Help Commands:**
 
 ```bash
 ansible --version                    # Check Ansible installation
@@ -202,10 +203,8 @@ ansible-inventory --list             # Debug inventory issues
 ansible-config view                  # Check configuration settings
 ```
 
-## 📚 Additional Resources
+## � Additional Resources
 
 - [Ansible Network Documentation](https://docs.ansible.com/ansible/latest/network/index.html)
 - [Cisco IOS Collection](https://galaxy.ansible.com/cisco/ios)
 - [Jinja2 Template Documentation](https://jinja.palletsprojects.com/)
-
----
