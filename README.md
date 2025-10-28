@@ -12,20 +12,30 @@
 
 ## Module Overview
 
-This companion repository contains hands-on exercises and examples for Module 7, focusing on Infrastructure as Code using Ansible for network automation. Students will learn to structure Ansible projects, manage configurations through code, and leverage Jinja2 templating for dynamic network configurations.
+This companion repository provides a progressive learning path for Infrastructure as Code using Ansible for network automation. You'll start with basic concepts and gradually build expertise through hands-on exercises with Cisco DevNet Sandbox devices.
 
-## Table of Contents
+## 🚀 Learning Path
 
-### 📚 Learning Objectives
+**Follow these topics in order for the best learning experience:**
 
-By the end of this module, students will be able to:
+### 📚 Learning Progression
 
-1. **Introduction to Ansible** - Understand Ansible's role in network automation
-2. **Build Basic Inventory** - Create inventory files and run general playbooks against Cisco devices
-3. **Host Variables** - Implement device-specific configurations using host_vars
-4. **Group Variables** - Manage shared configurations across device groups using group_vars
-5. **Jinja2 Templates** - Create dynamic Cisco configuration templates
-6. **Configuration Rendering** - Generate configurations using both host_vars and group_vars
+**🎯 Start Here:** Complete each topic before moving to the next one.
+
+1. **[01 - Ansible Introduction](./01_ansible_introduction/)** - Set up your environment, learn Ansible basics, and secure credentials with Vault
+2. **[02 - Basic Inventory](./02_basic_inventory/)** - Connect to devices and run your first playbooks  
+3. **[03 - Host Variables](./03_host_variables/)** - Organize device-specific configurations cleanly
+4. **[04 - Group Variables](./04_group_variables/)** - Manage shared settings across device groups
+5. **[05 - Jinja Templates](./05_jinja_templates/)** - Create dynamic, data-driven configurations
+
+**By the end of this module, you'll be able to:**
+
+- Configure and use Ansible for network device management
+- Secure credentials properly using Ansible Vault
+- Organize variables effectively using host_vars and group_vars  
+- Create reusable Jinja2 templates for configuration generation
+- Build scalable automation that works across multiple devices
+- Apply Infrastructure as Code principles to network operations
 
 ### 📁 Project Structure
 
@@ -63,60 +73,82 @@ Module-7-Companion/
 
 ### Prerequisites Setup
 
-1. Ensure Ansible is installed on your system
-2. Install the Cisco collection for Ansible:
+Before starting the companion exercises:
+
+1. **Ansible Installation**: Ensure Ansible is installed on your system
+2. **Cisco Collection**: Install the required Cisco modules:
 
    ```bash
    ansible-galaxy collection install cisco.ios
    ```
 
-3. Have access to Cisco devices (physical, GNS3, or CML)
+3. **DevNet Sandbox**: Reserve a Cisco DevNet Sandbox device for hands-on practice
+4. **Text Editor**: Use VS Code or your preferred editor for YAML files
 
-### Quick Start Guide
+### How to Use This Companion
 
-1. Clone this repository to your local machine
-2. Navigate to the project directory
-3. Review the `ansible.cfg` configuration
-4. Update the inventory file with your device information
-5. Start with the basic playbooks in sequential order
+**🎯 Follow the Learning Path:**
 
-## 📖 Exercise Flow
+1. **Start with Topic 01** - Each topic builds on the previous one
+2. **Complete all TODO items** - These guide your hands-on practice  
+3. **Test your work** - Run the commands and playbooks as you progress
+4. **Experiment** - Modify examples to deepen your understanding
+5. **Ask questions** - Use the class discussion board for help
 
-### Exercise 1: Introduction to Ansible
+**📁 Working Directory Setup:**
 
-- Review project structure
-- Understand Ansible configuration file
-- Learn inventory file basics
+```bash
+# Clone and navigate to the companion
+git clone <repository-url> Module-7-Companion
+cd Module-7-Companion
 
-### Exercise 2: Basic Inventory and Playbook
+# Start with topic 01
+cd 01_ansible_introduction
+```
 
-- Configure inventory with Cisco devices
-- Run basic connectivity tests
-- Execute simple configuration tasks
+## 📖 What You'll Build
 
-### Exercise 3: Host Variables Implementation
+As you progress through the topics, you'll build a complete Ansible automation system:
 
-- Create device-specific variables
-- Apply configurations using host_vars
-- Understand variable precedence
+### 🎯 Progressive Skills Development
 
-### Exercise 4: Group Variables Implementation  
+#### Topic 01-02: Foundation
 
-- Define group-level configurations
-- Apply shared settings across device groups
-- Combine host_vars and group_vars
+- Basic Ansible configuration and secure credential management
+- Device connectivity and simple automation tasks
 
-### Exercise 5: Jinja2 Templates
+#### Topic 03-04: Organization
 
-- Create dynamic configuration templates
-- Use conditional logic in templates
-- Implement loops and filters
+- Clean variable management using host_vars and group_vars
+- Multi-device configurations with shared and unique settings
 
-### Exercise 6: Full Configuration Rendering
+#### Topic 05: Advanced
 
-- Combine all concepts
-- Generate complete device configurations
-- Deploy configurations to devices
+- Dynamic configuration generation using Jinja2 templates
+- Scalable, maintainable automation workflows
+
+### 🏗 Final Project Structure
+
+By completion, your project will look like:
+
+```bash
+Module-7-Companion/
+├── ansible.cfg              # Ansible configuration
+├── inventory/
+│   └── hosts.yml            # Clean device inventory
+├── host_vars/               # Device-specific variables
+│   ├── router01.yml
+│   └── switch01.yml
+├── group_vars/              # Shared group variables  
+│   ├── all.yml
+│   ├── routers.yml
+│   └── switches.yml
+├── templates/               # Jinja2 configuration templates
+│   ├── base_config.j2
+│   └── vlan_config.j2
+└── playbooks/               # Automation playbooks
+    └── deploy_configs.yml
+```
 
 ## 🔧 Configuration Examples
 
@@ -127,22 +159,48 @@ Each directory contains detailed examples and comments to help you understand:
 - **Group Variables**: Common settings like SNMP, NTP, domain information
 - **Templates**: Reusable Jinja2 templates for various configuration sections
 
-## 📝 Notes for Students
+## 🎓 Success Tips
 
-- Follow the exercises in the suggested order
-- Modify the sample data to match your lab environment
-- Experiment with different variable combinations
-- Test templates before applying to production devices
-- Always backup device configurations before making changes
+**📝 Best Practices for Learning:**
 
-## 🆘 Troubleshooting
+- **Start Simple**: Complete topics in order - each builds on the previous
+- **Practice First**: Complete TODO items before reading ahead  
+- **Test Everything**: Run commands and verify results as you go
+- **Experiment**: Modify examples to see what happens
+- **Document**: Add comments explaining what you learn
+- **Ask Questions**: Use the discussion board when stuck
 
-Common issues and solutions:
+**🔧 Technical Reminders:**
 
-- **Connection Issues**: Check inventory file credentials and IP addresses
-- **Template Errors**: Validate Jinja2 syntax and variable names  
-- **Variable Conflicts**: Review variable precedence rules
-- **Playbook Failures**: Check device compatibility and available modules
+- **Security First**: Always use Ansible Vault for credentials
+- Keep your DevNet Sandbox reservation active
+- Use version control (git) to track your progress  
+- Test configurations in lab environment only
+- Always backup device configs before applying changes
+
+## 🆘 Getting Help
+
+**🔧 Common Issues:**
+
+- **Connection Problems**: Verify DevNet Sandbox IP and credentials
+- **Module Errors**: Ensure `cisco.ios` collection is installed
+- **Template Issues**: Check Jinja2 syntax and variable names
+- **Playbook Failures**: Verify device OS compatibility
+
+**💬 Where to Ask for Help:**
+
+- Class discussion board for technical questions
+- Office hours for concept clarification  
+- Study groups for collaborative learning
+
+**🔍 Self-Help Commands:**
+
+```bash
+ansible --version                    # Check Ansible installation
+ansible-galaxy list                  # Verify installed collections  
+ansible-inventory --list             # Debug inventory issues
+ansible-config view                  # Check configuration settings
+```
 
 ## 📚 Additional Resources
 

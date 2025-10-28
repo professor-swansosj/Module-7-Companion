@@ -1,0 +1,15 @@
+# Sample clean inventory file (create as inventory/hosts.yml)
+# TODO: Replace your messy inline variables with this clean structure
+
+all:
+  children:
+    cisco_devices:
+      hosts:
+        router01:
+          ansible_host: 192.168.1.1  # TODO: Your actual router IP
+        switch01:
+          ansible_host: 192.168.1.2  # TODO: Your actual switch IP
+        # TODO: Add switch02 if you have a second device
+
+# Notice how clean this looks compared to inline variables!
+# All device-specific settings are now in host_vars/ directory
