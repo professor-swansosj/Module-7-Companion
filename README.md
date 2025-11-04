@@ -8,12 +8,12 @@
 
 Transform your network automation skills by learning Infrastructure as Code principles with Ansible. Build from basic concepts to advanced automation patterns that scale across enterprise environments.
 
-## � Prerequisites
+## 📋 Prerequisites
 
 - **Course**: Software Defined Networking (Network Automation)
 - **Level**: Senior Level
 - **Prerequisites**: Linux+, Introduction to Python, Cisco 1, 2, 3
-- **Module**: 7 - Infrastructure as Code with Ansible
+- **Module 7**: Infrastructure as Code with Ansible
 
 ## 🗂 Learning Path
 
@@ -21,13 +21,13 @@ Transform your network automation skills by learning Infrastructure as Code prin
 
 ### Learning Progression
 
-**🎯 Start Here:** Complete each topic before moving to the next one.
+**🎯 Start Here:** Complete each section before moving to the next one.
 
-1. **[01 - Ansible Introduction](./01_ansible_introduction/)** - Set up your environment, learn Ansible basics, and secure credentials with Vault
-2. **[02 - Basic Inventory](./02_basic_inventory/)** - Connect to devices and run your first playbooks  
-3. **[03 - Host Variables](./03_host_variables/)** - Organize device-specific configurations cleanly
-4. **[04 - Group Variables](./04_group_variables/)** - Manage shared settings across device groups
-5. **[05 - Jinja Templates](./05_jinja_templates/)** - Create dynamic, data-driven configurations
+1. **[Section 01 - Ansible Introduction](./01_ansible_introduction/)** - Set up your environment, learn Ansible basics, and secure credentials with Vault
+2. **[Section 02 - Basic Inventory](./02_basic_inventory/)** - Connect to devices and run your first playbooks  
+3. **[Section 03 - Host Variables](./03_host_variables/)** - Organize device-specific configurations cleanly
+4. **[Section 04 - Group Variables](./04_group_variables/)** - Manage shared settings across device groups
+5. **[Section 05 - Jinja Templates](./05_jinja_templates/)** - Create dynamic, data-driven configurations
 
 **By the end of this module, you'll be able to:**
 
@@ -88,9 +88,9 @@ Before starting the companion exercises:
 
 ## 🎯 Practice Callouts
 
-**🎯 Follow the Learning Path:**
+**Follow the Learning Path:**
 
-1. **Start with Topic 01** - Each topic builds on the previous one
+1. **Start with Section 01** - Each section builds on the previous one
 2. **Complete all TODO items** - These guide your hands-on practice  
 3. **Test your work** - Run the commands and playbooks as you progress
 4. **Experiment** - Modify examples to deepen your understanding
@@ -113,17 +113,17 @@ As you progress through the topics, you'll build a complete Ansible automation s
 
 ### Progressive Skills Development
 
-#### Topic 01-02: Foundation
+#### Section 01-02: Foundation
 
 - Basic Ansible configuration and secure credential management
 - Device connectivity and simple automation tasks
 
-#### Topic 03-04: Organization
+#### Section 03-04: Organization
 
 - Clean variable management using host_vars and group_vars
 - Multi-device configurations with shared and unique settings
 
-#### Topic 05: Advanced
+#### Section 05: Advanced
 
 - Dynamic configuration generation using Jinja2 templates
 - Scalable, maintainable automation workflows
@@ -160,9 +160,9 @@ Each directory contains detailed examples and comments to help you understand:
 - **Group Variables**: Common settings like SNMP, NTP, domain information
 - **Templates**: Reusable Jinja2 templates for various configuration sections
 
-## � Success Criteria
+## 🏆 Success Criteria
 
-**📝 Best Practices for Learning:**
+**Best Practices for Learning:**
 
 - **Start Simple**: Complete topics in order - each builds on the previous
 - **Practice First**: Complete TODO items before reading ahead  
@@ -203,7 +203,7 @@ ansible-inventory --list             # Debug inventory issues
 ansible-config view                  # Check configuration settings
 ```
 
-## � Additional Resources
+## 🔗 Additional Resources
 
 - [Ansible Network Documentation](https://docs.ansible.com/ansible/latest/network/index.html)
 - [Cisco IOS Collection](https://galaxy.ansible.com/cisco/ios)
