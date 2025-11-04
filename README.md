@@ -151,7 +151,7 @@ Module-7-Companion/
     └── deploy_configs.yml
 ```
 
-## � Configuration Examples
+## ⚙️ Configuration Examples
 
 Each directory contains detailed examples and comments to help you understand:
 
