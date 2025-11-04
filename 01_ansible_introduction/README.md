@@ -70,7 +70,7 @@ pipelining = True
    ansible-config view
    ```
 
-## � Securing Credentials with Ansible Vault
+## 🔐 Securing Credentials with Ansible Vault
 
 **Never put passwords in plain text!** Ansible Vault encrypts sensitive data so you can safely store credentials in your automation projects.
 
@@ -144,7 +144,7 @@ all:
    ansible-playbook --ask-vault-pass playbook.yml
    ```
 
-## �🔍 Check Yourself
+## 🔍 Check Yourself
 
 1. What does "idempotent" mean in the context of network automation?
 2. Why might you want to disable host key checking in a lab environment?
